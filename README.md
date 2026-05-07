@@ -81,3 +81,25 @@ Tipos permitidos: `FAMILIA`, `AMIGO`, `TRABALHO`, `OUTRO`.
 8. Extrair regras de negócio (ex.: proibição de excluir FAMILIA) para o serviço.
 9. Substituir logs manuais por `Logger` (SLF4J).
 10. Escrever testes unitários e de integração por camada.
+
+
+Equipe:
+- Rodrigo
+- Sergio
+- Marcos
+
+Marcos ->
+1. Separar em camadas: `controller` → `service` → `repository`.
+2. Criar DTOs de entrada e saída (`ContatoRequest`, `ContatoResponse`).
+3. Adotar Bean Validation (`@NotBlank`, `@Email`, `@Min`, `@Max`) e um `@ControllerAdvice`.
+
+Sergio ->
+4. Transformar `tipo` em `enum`, `ativo` em `boolean` e `dataCad` em `LocalDateTime`.
+5. Encapsular a entidade (campos `private` + construtor/builder).
+6. Extrair formatação de saída para a camada de apresentação (ou usar JSON direto).
+
+Rodrigo ->
+7. Substituir o `if/else` de `pesquisar` por Strategy ou por Specifications do Spring Data.
+8. Extrair regras de negócio (ex.: proibição de excluir FAMILIA) para o serviço.
+9. Substituir logs manuais por `Logger` (SLF4J).
+10. Escrever testes unitários e de integração por camada.
