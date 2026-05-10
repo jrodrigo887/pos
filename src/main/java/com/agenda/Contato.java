@@ -3,6 +3,8 @@ package com.agenda;
 import jakarta.persistence.*;
 import com.agenda.domain.*;
 import java.time.LocalDateTime;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 
 @Entity
 @Table(name = "contatos")
@@ -32,7 +34,7 @@ public class Contato {
 
     private int idade;
 
-    TipoContato tipo; // FAMILIA, AMIGO, TRABALHO, OUTRO - string mesmo - ALTERADO SERGIO
+    private TipoContato tipo; // FAMILIA, AMIGO, TRABALHO, OUTRO - string mesmo - ALTERADO SERGIO
 
     // data de cadastro - salva como string mesmo pq e mais facil - ALTERADO SERGIO
     private LocalDateTime dataCad = LocalDateTime.now();
