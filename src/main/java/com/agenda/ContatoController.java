@@ -1,6 +1,7 @@
 package com.agenda;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import com.agenda.domain.TipoContato;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,7 +63,7 @@ public class ContatoController {
 
 			List<Contato> todos = repo.findAll();
 			for (int i = 0; i < todos.size(); i++) {
-				if (todos.get(i).email != null && todos.get(i).email.equals(c.email)) {
+				if (todos.get(i).getEmail() != null && todos.get(i).getEmail().equals(c.getEmail())) {
 					return ResponseEntity.badRequest().body("erro: ja existe contato com esse email");
 				}
 			}
@@ -143,13 +144,13 @@ public class ContatoController {
 	            }
 			} else if (tipoBusca.equals("email")) {
 				for (int i = 0; i < todos.size(); i++) {
-					if (todos.get(i).email != null && todos.get(i).email.toLowerCase().contains(valor.toLowerCase())) {
+					if (todos.get(i).getEmail() != null && todos.get(i).getEmail().toLowerCase().contains(valor.toLowerCase())) {
 						achados.add(todos.get(i));
 					}
 				}
 			} else if (tipoBusca.equals("tel")) {
 				for (int i = 0; i < todos.size(); i++) {
-					if (todos.get(i).telefone != null && todos.get(i).telefone.contains(valor)) {
+					if (todos.get(i).getTelefone() != null && todos.get(i).getTelefone().contains(valor)) {
 						achados.add(todos.get(i));
 					}
 				}
@@ -165,7 +166,7 @@ public class ContatoController {
 				try {
 					Long idBusca = Long.parseLong(valor);
 					for (int i = 0; i < todos.size(); i++) {
-						if (todos.get(i).id.equals(idBusca)) {
+						if (todos.get(i).getId().equals(idBusca)) {
 							achados.add(todos.get(i));
 						}
 					}
@@ -216,20 +217,20 @@ public class ContatoController {
 			}
 			Contato atual = op.get();
 
-			if (c.nome != null && !c.nome.equals("")) {
-				if (c.nome.length() < 3) {
+			if (c.getNome() != null && !c.getNome().isBlank()) {
+				if (c.getNome().length() < 3) {
 					return ResponseEntity.badRequest().body("erro: nome muito curto");
 				}
-				atual.nome = c.nome;
+				atual.setNome(c.getNome());
 			}
 			if (c.getTelefone() != null) {
 				atual.setTelefone(c.getTelefone());
 			}
-			if (c.email != null && !c.email.equals("")) {
-				if (!c.email.contains("@")) {
+			if (c.getEmail() != null && !c.getEmail().isBlank()) {
+				if (!c.getEmail().contains("@")) {
 					return ResponseEntity.badRequest().body("erro: email invalido");
 				}
-				if (!c.email.contains(".")) {
+				if (!c.getEmail().contains(".")) {
 					return ResponseEntity.badRequest().body("erro: email invalido");
 				}
 				// verifica duplicado
@@ -237,20 +238,20 @@ public class ContatoController {
 				for (int i = 0; i < todos.size(); i++) {
 					if (todos.get(i).getEmail() != null 
 							&& todos.get(i).getEmail().equals(c.getEmail())
-							&& !todos.get(i).id.equals(id)) {
+							&& !todos.get(i).getId().equals(id)) {
 						return ResponseEntity.badRequest().body("erro: ja existe contato com esse email");
 					}
 				}
-				atual.email = c.email;
+				atual.setEmail(c.getEmail());
 			}
-			if (c.endereco != null && !c.endereco.equals("")) {
-				atual.endereco = c.endereco;
+			if (c.getEndereco() != null && !c.getEndereco().isBlank()) {
+				atual.setEndereco(c.getEndereco());
 			}
-			if (c.idade > 0) {
-				if (c.idade > 150) {
+			if (c.getIdade() > 0) {
+				if (c.getIdade() > 150) {
 					return ResponseEntity.badRequest().body("erro: idade invalida");
 				}
-				atual.idade = c.idade;
+				atual.setIdade(c.getIdade());
 			}
 			if (c.getTipo() != null){
 				atual.setTipo(c.getTipo());
@@ -260,17 +261,17 @@ public class ContatoController {
 
 			Contato salvo = repo.save(atual);
 
-			logs.add("contato editado: " + salvo.id + " em " + new Date());
+			logs.add("contato editado: " + salvo.getId() + " em " + new Date());
 
 			String resp = "Contato editado com sucesso!\n";
-			resp = resp + "ID: " + salvo.id + "\n";
-			resp = resp + "Nome: " + salvo.nome + "\n";
-			resp = resp + "Tel: " + salvo.telefone + "\n";
-			resp = resp + "Email: " + salvo.email + "\n";
-			resp = resp + "End: " + salvo.endereco + "\n";
-			resp = resp + "Idade: " + salvo.idade + "\n";
-			resp = resp + "Tipo: " + salvo.tipo + "\n";
-			resp = resp + "Ativo: " + salvo.ativo;
+			resp = resp + "ID: " + salvo.getId() + "\n";
+			resp = resp + "Nome: " + salvo.getNome() + "\n";
+			resp = resp + "Tel: " + salvo.getTelefone() + "\n";
+			resp = resp + "Email: " + salvo.getEmail() + "\n";
+			resp = resp + "End: " + salvo.getEndereco() + "\n";
+			resp = resp + "Idade: " + salvo.getIdade() + "\n";
+			resp = resp + "Tipo: " + salvo.getTipo() + "\n";
+			resp = resp + "Ativo: " + salvo.isAtivo();
 
 			return ResponseEntity.ok(resp);
 		} catch (Exception e) {
@@ -288,13 +289,13 @@ public class ContatoController {
 			}
 			Contato c = op.get();
 
-			if (c.getTipo() == null) {
-				return ResponseEntity.badRequest().body("erro: nao pode excluir contato do tipo FAMILIA");				
+			if (c.getTipo() == TipoContato.FAMILIA) {
+			    return ResponseEntity.badRequest().body("erro: nao pode excluir contato do tipo FAMILIA");
 			}
 
 			repo.deleteById(id);
 
-			logs.add("contato excluido: " + id + " - " + c.nome + " em " + new Date());
+			logs.add("contato excluido: " + id + " - " + c.getNome() + " em " + new Date());
 
 
 			return ResponseEntity.ok("contato " + id + " excluido com sucesso");
