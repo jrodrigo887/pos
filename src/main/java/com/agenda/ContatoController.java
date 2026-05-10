@@ -24,7 +24,7 @@ public class ContatoController {
 	public ResponseEntity<String> incluir(@RequestBody Contato c) {
 		try {
 			if (c.getNome() == null || c.getNome().isBlank()) {
-				logs.add("erro: nome vazio - " + LocalDateTime.now());
+				logs.add("erro: email vazio - " + LocalDateTime.now());
 				return ResponseEntity.badRequest().body("erro: nome obrigatório");
 			}
 			if (c.getNome().length() < 3) {
@@ -32,30 +32,30 @@ public class ContatoController {
 				return ResponseEntity.badRequest().body("erro: nome muito curto");
 			}
 			if (c.getTelefone() == null || c.getTelefone().isBlank()) {
-	            logs.add("erro: tel vazio - " + LocalDateTime.now());
+				logs.add("erro: telefone vazio - " + LocalDateTime.now());
 	            return ResponseEntity.badRequest().body("erro: telefone obrigatorio");
 	        }
-			if (c.email == null || c.getEmail().isBlank()) {
-				logs.add("erro: email vazio - " + new Date());
+			if (c.getEmail() == null || c.getEmail().isBlank()) {
+				logs.add("erro: email vazio - " + LocalDateTime.now());
 				return ResponseEntity.badRequest().body("erro: email obrigatorio");
 			}
-			if (!c.email.contains("@")) {
+			if (!c.getEmail().contains("@")) {
+				logs.add("erro: email inválido - " + LocalDateTime.now());
+				return ResponseEntity.badRequest().body("erro: email invalido");
+			}
+			if (!c.getEmail().contains(".")) {
 				logs.add("erro: email invalido - " + new Date());
 				return ResponseEntity.badRequest().body("erro: email invalido");
 			}
-			if (!c.email.contains(".")) {
-				logs.add("erro: email invalido - " + new Date());
-				return ResponseEntity.badRequest().body("erro: email invalido");
-			}
-			if (c.idade < 0) {
+			if (c.getIdade() < 0) {
 				return ResponseEntity.badRequest().body("erro: idade invalida");
 			}
-			if (c.idade > 150) {
+			if (c.getIdade() > 150) {
 				return ResponseEntity.badRequest().body("erro: idade invalida");
 			}
-			if (c.tipo == null) {
-				return ResponseEntity.badRequest().body("erro: tipo obrigatorio");
-			}
+			if (c.getStatus() == null) {
+		        return ResponseEntity.badRequest().body("erro: status obrigatorio");
+		    }
 			if (c.getTipo() == null) {
 				return ResponseEntity.badRequest().body("erro: tipo invalido. Use: FAMILIA, AMIGO, TRABALHO ou OUTRO");
 			}
@@ -75,21 +75,16 @@ public class ContatoController {
 
 			cont = cont + 1;
 
-			logs.add("contato incluido: " + salvo.id + " - " + salvo.nome + " em " + new Date());
+			logs.add("contato incluido: " + salvo.getId() + " - " + salvo.getNome() + " em " + new Date());
 
-			System.out.println("=== EMAIL ENVIADO ===");
-			System.out.println("Para: " + salvo.email);
-			System.out.println("Assunto: Bem vindo a agenda");
-			System.out.println("Ola " + salvo.nome + ", voce foi cadastrado na agenda!");
-			System.out.println("=====================");
 
 			String resp = "Contato incluido com sucesso!\n";
-			resp = resp + "ID: " + salvo.id + "\n";
-			resp = resp + "Nome: " + salvo.nome + "\n";
-			resp = resp + "Tel: " + salvo.telefone + "\n";
-			resp = resp + "Email: " + salvo.email + "\n";
-			resp = resp + "Tipo: " + salvo.tipo + "\n";
-			resp = resp + "Cadastrado em: " + salvo.dataCad;
+			resp = resp + "ID: " + salvo.getId() + "\n";
+			resp = resp + "Nome: " + salvo.getNome() + "\n";
+			resp = resp + "Tel: " + salvo.getTelefone() + "\n";
+			resp = resp + "Email: " + salvo.getEmail() + "\n";
+			resp = resp + "Tipo: " + salvo.getTipo() + "\n";
+			resp = resp + "Cadastrado em: " + salvo.getDataCad();
 
 			return ResponseEntity.ok(resp);
 		} catch (Exception e) {
@@ -301,11 +296,6 @@ public class ContatoController {
 
 			logs.add("contato excluido: " + id + " - " + c.nome + " em " + new Date());
 
-			System.out.println("=== EMAIL ENVIADO ===");
-			System.out.println("Para: " + c.email);
-			System.out.println("Assunto: Contato removido");
-			System.out.println("Ola " + c.nome + ", voce foi removido da agenda!");
-			System.out.println("=====================");
 
 			return ResponseEntity.ok("contato " + id + " excluido com sucesso");
 		} catch (Exception e) {

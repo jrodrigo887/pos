@@ -1,1 +1,33 @@
+# Maven / Gradle
 /target/
+
+# Compilados Java
+*.class
+*.log
+
+# Pacotes
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Eclipse
+/bin/
+.project
+.classpath
+.settings/
+.metadata/
+.loadpath
+*.launch
+.externalToolBuilders/
+
+# Spring Tools
+.sts4-cache/
+
+# Temporários
+*.tmp
+*.bak
+*.swp
+*~

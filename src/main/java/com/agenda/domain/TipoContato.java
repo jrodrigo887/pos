@@ -5,5 +5,4 @@ public enum TipoContato {
 	AMIGO,
 	TRABALHO,
 	OUTRO
-
 }

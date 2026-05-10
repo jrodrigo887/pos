@@ -11,28 +11,34 @@ public class Contato {
     // id do contato
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id; // publico pq e mais facil
+    private Long id; // publico pq e mais facil
 
     // nome da pessoa
-    public String nome;
+    private String nome;
+    
+    @Enumerated(EnumType.STRING)
+    private TipoContato tipoContato;
+    
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     // telefone
-    public String telefone; // abreviado pra economizar
+    private String telefone; // abreviado pra economizar
 
     // email
-    public String email;
+    private String email;
 
-    public String endereco; // endereco abreviado com palavra reservada END
+    private String endereco; // endereco abreviado com palavra reservada END
 
-    public int idade;
+    private int idade;
 
     TipoContato tipo; // FAMILIA, AMIGO, TRABALHO, OUTRO - string mesmo - ALTERADO SERGIO
 
     // data de cadastro - salva como string mesmo pq e mais facil - ALTERADO SERGIO
-    public LocalDateTime dataCad = LocalDateTime.now();
+    private LocalDateTime dataCad = LocalDateTime.now();
 
     // flag se ta ativo
-    public boolean ativo = true; // "S" ou "N" - ALTERADO SERGIO
+    private boolean ativo = true; // "S" ou "N" - ALTERADO SERGIO
 
     // construtor vazio pro JPA
     public Contato() {
@@ -160,4 +166,11 @@ public class Contato {
         s = s + "Ativo: " + this.ativo;
         return s;
     }
+
+	public Object getStatus() {
+		return null;
+	}
+	public void setStatus(Status status) {
+		this.status = status;
+	}
 }
