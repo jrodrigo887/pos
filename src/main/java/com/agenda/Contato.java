@@ -3,8 +3,6 @@ package com.agenda;
 import jakarta.persistence.*;
 import com.agenda.domain.*;
 import java.time.LocalDateTime;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 
 @Entity
 @Table(name = "contatos")
@@ -17,10 +15,7 @@ public class Contato {
 
     // nome da pessoa
     private String nome;
-    
-    @Enumerated(EnumType.STRING)
-    private TipoContato tipoContato;
-    
+
     @Enumerated(EnumType.STRING)
     private Status status;
 
@@ -149,7 +144,7 @@ public class Contato {
         	return false;
         if (this.idade < 0 || this.idade > 150)
             return false;
-        if (this.tipo == null)
+        if (this.status == null)
         	return false;
         
         return true;
@@ -169,8 +164,8 @@ public class Contato {
         return s;
     }
 
-	public Object getStatus() {
-		return null;
+	public Status getStatus() {
+		return status;
 	}
 	public void setStatus(Status status) {
 		this.status = status;

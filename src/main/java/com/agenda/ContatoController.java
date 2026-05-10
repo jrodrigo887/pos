@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.agenda.domain.TipoContato;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -45,7 +48,7 @@ public class ContatoController {
 				return ResponseEntity.badRequest().body("erro: email invalido");
 			}
 			if (!c.getEmail().contains(".")) {
-				logs.add("erro: email invalido - " + new Date());
+				logs.add("erro: email invalido - " + LocalDateTime.now());
 				return ResponseEntity.badRequest().body("erro: email invalido");
 			}
 			if (c.getIdade() < 0) {
@@ -55,10 +58,13 @@ public class ContatoController {
 				return ResponseEntity.badRequest().body("erro: idade invalida");
 			}
 			if (c.getStatus() == null) {
-		        return ResponseEntity.badRequest().body("erro: status obrigatorio");
-		    }
+				System.out.println("STATUS RECEBIDO: " + c.getStatus());
+				System.out.println("TIPO RECEBIDO: " + c.getTipo());
+			    return ResponseEntity.badRequest().body("erro: status obrigatorio");
+			}
+
 			if (c.getTipo() == null) {
-				return ResponseEntity.badRequest().body("erro: tipo invalido. Use: FAMILIA, AMIGO, TRABALHO ou OUTRO");
+			    return ResponseEntity.badRequest().body("erro: tipo invalido. Use: FAMILIA, AMIGO, TRABALHO ou OUTRO");
 			}
 
 			List<Contato> todos = repo.findAll();
@@ -67,6 +73,7 @@ public class ContatoController {
 					return ResponseEntity.badRequest().body("erro: ja existe contato com esse email");
 				}
 			}
+			repo.save(c);
 			
 			c.setDataCad(LocalDateTime.now());
 
@@ -76,7 +83,7 @@ public class ContatoController {
 
 			cont = cont + 1;
 
-			logs.add("contato incluido: " + salvo.getId() + " - " + salvo.getNome() + " em " + new Date());
+			logs.add("contato incluido: " + salvo.getId() + " - " + salvo.getNome() + " em " + LocalDateTime.now());
 
 
 			String resp = "Contato incluido com sucesso!\n";
@@ -88,6 +95,7 @@ public class ContatoController {
 			resp = resp + "Cadastrado em: " + salvo.getDataCad();
 
 			return ResponseEntity.ok(resp);
+			
 		} catch (Exception e) {
 			logs.add("erro inesperado ao incluir: " + e.getMessage());
 			e.printStackTrace();
@@ -257,11 +265,11 @@ public class ContatoController {
 				atual.setTipo(c.getTipo());
 			}
 				
-			c.isAtivo();
+			atual.setAtivo(c.isAtivo());
 
 			Contato salvo = repo.save(atual);
 
-			logs.add("contato editado: " + salvo.getId() + " em " + new Date());
+			logs.add("contato editado: " + salvo.getId() + " em " + LocalDateTime.now());
 
 			String resp = "Contato editado com sucesso!\n";
 			resp = resp + "ID: " + salvo.getId() + "\n";
@@ -295,7 +303,7 @@ public class ContatoController {
 
 			repo.deleteById(id);
 
-			logs.add("contato excluido: " + id + " - " + c.getNome() + " em " + new Date());
+			logs.add("contato excluido: " + id + " - " + c.getNome() + " em " + LocalDateTime.now());
 
 
 			return ResponseEntity.ok("contato " + id + " excluido com sucesso");
