@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.agenda.filtros.Filtro;
+import com.agenda.filtros.IPesquisarContatoStrategy;
+
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -137,47 +140,14 @@ public class ContatoController {
     public ResponseEntity<String> pesquisar(@RequestParam String tipoBusca, @RequestParam String valor) {
         try {
             List<Contato> todos = repo.findAll();
-            List<Contato> achados = new ArrayList<>();
+            IPesquisarContatoStrategy pesquisa = Filtro.chaveDoContato(tipoBusca);
 
-            if (tipoBusca.equals("nome")) {
-                for (int i = 0; i < todos.size(); i++) {
-                    if (todos.get(i).nome != null && todos.get(i).nome.toLowerCase().contains(valor.toLowerCase())) {
-                        achados.add(todos.get(i));
-                    }
-                }
-            } else if (tipoBusca.equals("email")) {
-                for (int i = 0; i < todos.size(); i++) {
-                    if (todos.get(i).email != null && todos.get(i).email.toLowerCase().contains(valor.toLowerCase())) {
-                        achados.add(todos.get(i));
-                    }
-                }
-            } else if (tipoBusca.equals("tel")) {
-                for (int i = 0; i < todos.size(); i++) {
-                    if (todos.get(i).tel != null && todos.get(i).tel.contains(valor)) {
-                        achados.add(todos.get(i));
-                    }
-                }
-            } else if (tipoBusca.equals("tipo")) {
-                for (int i = 0; i < todos.size(); i++) {
-                    if (todos.get(i).tipo != null && todos.get(i).tipo.equals(valor)) {
-                        achados.add(todos.get(i));
-                    }
-                }
-            } else if (tipoBusca.equals("id")) {
-                try {
-                    Long idBusca = Long.parseLong(valor);
-                    for (int i = 0; i < todos.size(); i++) {
-                        if (todos.get(i).id.equals(idBusca)) {
-                            achados.add(todos.get(i));
-                        }
-                    }
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body("erro: id invalido");
-                }
-            } else {
-                return ResponseEntity.badRequest()
+                if (pesquisa == null) {
+                    return ResponseEntity.badRequest()
                         .body("erro: tipo de busca invalido. Use: nome, email, tel, tipo ou id");
-            }
+                }
+
+            List<Contato> achados = pesquisa.executar(todos, valor.toString());
 
             if (achados.size() == 0) {
                 return ResponseEntity.ok("nenhum contato encontrado");
@@ -200,7 +170,10 @@ public class ContatoController {
             }
 
             logs.add("pesquisou por " + tipoBusca + " valor=" + valor);
+            
             return ResponseEntity.ok(s);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("erro interno: " + e.getMessage());
