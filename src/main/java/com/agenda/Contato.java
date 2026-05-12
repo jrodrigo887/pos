@@ -1,6 +1,8 @@
 package com.agenda;
 
 import jakarta.persistence.*;
+import com.agenda.domain.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "contatos")
@@ -9,41 +11,44 @@ public class Contato {
     // id do contato
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id; // publico pq e mais facil
+    private Long id; // publico pq e mais facil
 
     // nome da pessoa
-    public String nome;
+    private String nome;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     // telefone
-    public String tel; // abreviado pra economizar
+    private String telefone; // abreviado pra economizar
 
     // email
-    public String email;
+    private String email;
 
-    public String end; // endereco abreviado
+    private String endereco; // endereco abreviado com palavra reservada END
 
-    public int idade;
+    private int idade;
 
-    public String tipo; // FAMILIA, AMIGO, TRABALHO, OUTRO - string mesmo
+    private TipoContato tipo; // FAMILIA, AMIGO, TRABALHO, OUTRO - string mesmo - ALTERADO SERGIO
 
-    // data de cadastro - salva como string mesmo pq e mais facil
-    public String dataCad;
+    // data de cadastro - salva como string mesmo pq e mais facil - ALTERADO SERGIO
+    private LocalDateTime dataCad = LocalDateTime.now();
 
     // flag se ta ativo
-    public String ativo; // "S" ou "N"
+    private boolean ativo = true; // "S" ou "N" - ALTERADO SERGIO
 
     // construtor vazio pro JPA
     public Contato() {
     }
 
     // construtor com tudo
-    public Contato(Long id, String nome, String tel, String email, String end, int idade, String tipo, String dataCad,
-            String ativo) {
+    public Contato(Long id, String nome, String telefone, String email, String endereco, int idade, TipoContato tipo, LocalDateTime dataCad,
+            boolean ativo) {
         this.id = id;
         this.nome = nome;
-        this.tel = tel;
+        this.telefone = telefone;
         this.email = email;
-        this.end = end;
+        this.endereco = endereco;
         this.idade = idade;
         this.tipo = tipo;
         this.dataCad = dataCad;
@@ -67,12 +72,12 @@ public class Contato {
         this.nome = nome;
     }
 
-    public String getTel() {
-        return tel;
+    public String getTelefone() {
+        return telefone;
     }
 
-    public void setTel(String tel) {
-        this.tel = tel;
+    public void setTelefone(String tel) {
+        this.telefone = tel;
     }
 
     public String getEmail() {
@@ -83,12 +88,12 @@ public class Contato {
         this.email = email;
     }
 
-    public String getEnd() {
-        return end;
+    public String getEndereco() {
+        return endereco;
     }
 
-    public void setEnd(String end) {
-        this.end = end;
+    public void setEndereco(String endereco) {
+        this.endereco = endereco;
     }
 
     public int getIdade() {
@@ -99,49 +104,49 @@ public class Contato {
         this.idade = idade;
     }
 
-    public String getTipo() {
+    public TipoContato getTipo() {
         return tipo;
     }
 
-    public void setTipo(String tipo) {
+    public void setTipo(TipoContato tipo) {
         this.tipo = tipo;
     }
 
-    public String getDataCad() {
+    public LocalDateTime getDataCad() {
         return dataCad;
     }
 
-    public void setDataCad(String dataCad) {
+    public void setDataCad(LocalDateTime dataCad) {
         this.dataCad = dataCad;
     }
 
-    public String getAtivo() {
+    public boolean isAtivo() {
         return ativo;
     }
 
-    public void setAtivo(String ativo) {
+    public void setAtivo(boolean ativo) {
         this.ativo = ativo;
     }
 
     // metodo que valida o contato - poderia estar em outro lugar mas ta aqui mesmo
     public boolean valida() {
-        if (this.nome == null || this.nome.equals(""))
+        if (this.nome == null || this.nome.isBlank())
             return false;
         if (this.nome.length() < 3)
             return false;
-        if (this.tel == null || this.tel.equals(""))
+        if (this.telefone == null || this.telefone.isBlank())
             return false;
-        if (this.email == null || this.email.equals(""))
+        if (this.email == null || this.email.isBlank())
             return false;
         if (!this.email.contains("@"))
             return false;
+        if (!this.email.contains("."))
+        	return false;
         if (this.idade < 0 || this.idade > 150)
             return false;
-        if (this.tipo == null)
-            return false;
-        if (!this.tipo.equals("FAMILIA") && !this.tipo.equals("AMIGO") && !this.tipo.equals("TRABALHO")
-                && !this.tipo.equals("OUTRO"))
-            return false;
+        if (this.status == null)
+        	return false;
+        
         return true;
     }
 
@@ -150,12 +155,19 @@ public class Contato {
         String s = "";
         s = s + "ID: " + this.id + " | ";
         s = s + "Nome: " + this.nome + " | ";
-        s = s + "Tel: " + this.tel + " | ";
+        s = s + "Tel: " + this.telefone + " | ";
         s = s + "Email: " + this.email + " | ";
-        s = s + "End: " + this.end + " | ";
+        s = s + "End: " + this.endereco + " | ";
         s = s + "Idade: " + this.idade + " | ";
         s = s + "Tipo: " + this.tipo + " | ";
         s = s + "Ativo: " + this.ativo;
         return s;
     }
+
+	public Status getStatus() {
+		return status;
+	}
+	public void setStatus(Status status) {
+		this.status = status;
+	}
 }
