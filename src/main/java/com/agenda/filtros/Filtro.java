@@ -8,7 +8,6 @@ public class Filtro {
         IPesquisarContatoStrategy estrategia =  Map.of(
             "nome", new BuscarPorNome(),
             "email", new BuscarPorEmail(),
-            "tel", new BuscarPorTelefone(),
             "telefone", new BuscarPorTelefone(),
             "tipo", new BuscarPorTipo(),
             "id", new BuscarPorId()

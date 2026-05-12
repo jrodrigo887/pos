@@ -146,7 +146,7 @@ public class ContatoController {
 
                 if (pesquisa == null) {
                     return ResponseEntity.badRequest()
-                        .body("erro: tipo de busca invalido. Use: nome, email, tel, tipo ou id");
+                        .body("erro: tipo de busca invalido. Use: nome, email, telefone, tipo ou id");
                 }
 
             List<Contato> achados = pesquisa.executar(todos, valor.toString());
