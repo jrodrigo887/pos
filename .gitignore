@@ -11,7 +11,9 @@
 # ========================
 # Diretórios de build
 # ========================
+target/*
 target/
+target/**/*.class
 build/
 out/
 bin/
@@ -63,7 +65,7 @@ bin/
 # ========================
 # VS Code
 # ========================
-.vscode/
+.vscode
 *.code-workspace
 
 # ========================
