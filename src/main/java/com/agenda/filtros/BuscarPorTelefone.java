@@ -13,7 +13,7 @@ public class BuscarPorTelefone implements IPesquisarContatoStrategy {
 
         for (Contato contato : contatos) {
             if (contato != null 
-                && contato.getTel().toLowerCase().contains(value.toLowerCase()))
+                && contato.getTelefone().toLowerCase().contains(value.toLowerCase()))
                 achados.add(contato);
         }
         return achados;

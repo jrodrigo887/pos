@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.agenda.Contato;
+import com.agenda.domain.TipoContato;
 
 public class BuscarPorTipo implements IPesquisarContatoStrategy {
 
@@ -13,7 +14,7 @@ public class BuscarPorTipo implements IPesquisarContatoStrategy {
 
         for (Contato contato : contatos) {
             if (contato != null
-                && contato.getTipo().toLowerCase().equals(value.toLowerCase()))
+                && contato.getTipo().equals(TipoContato.valueOf(value)))
                 achados.add(contato);
         }
         return achados;
