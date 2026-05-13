@@ -1,8 +1,14 @@
-package com.agenda;
+package com.agenda.domain;
 
-import jakarta.persistence.*;
-import com.agenda.domain.*;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "contatos")

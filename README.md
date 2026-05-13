@@ -14,9 +14,9 @@ A aplicação sobe em `http://localhost:8080` com banco H2 em memória (console 
 
 | Método | URL | Descrição |
 |--------|------|-----------|
-| POST   | `/contatos/incluir` | Inclui um contato (JSON no body) |
-| GET    | `/contatos/listar` | Lista todos |
-| GET    | `/contatos/pesquisar?tipoBusca=nome&valor=joao` | Pesquisa (tipos: `nome`, `email`, `tel`, `tipo`, `id`) |
+| POST   | `/contatos/incluir` | Inclui um contato (JSON no body) | [OK]
+| GET    | `/contatos/listar` | Lista todos |[OK]
+| GET    | `/contatos/pesquisar?tipoBusca=nome&valor=joao` | Pesquisa (tipos: `nome`, `email`, `tel`, `tipo`, `id`) |[ok]
 | PUT    | `/contatos/editar/{id}` | Edita um contato |
 | DELETE | `/contatos/excluir/{id}` | Exclui um contato |
 | GET    | `/contatos/logs` | Mostra o "log" interno |
