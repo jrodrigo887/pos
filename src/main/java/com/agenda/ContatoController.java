@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.agenda.domain.TipoContato;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.agenda.filtros.Filtro;
+import com.agenda.filtros.IPesquisarContatoStrategy;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -135,60 +138,22 @@ public class ContatoController {
 		}
 	}
 
-	@GetMapping("/pesquisar")
-	public ResponseEntity<String> pesquisar(
-	        @RequestParam String tipoBusca,
-	        @RequestParam String valor) {
-		try {
-			List<Contato> todos = repo.findAll();
-			List<Contato> achados = new ArrayList<>();
+    @GetMapping("/pesquisar")
+    public ResponseEntity<String> pesquisar(@RequestParam String tipoBusca, @RequestParam String valor) {
+        try {
+            List<Contato> todos = repo.findAll();
+            IPesquisarContatoStrategy pesquisa = Filtro.chaveDoContato(tipoBusca);
 
-			if (tipoBusca.equals("nome")) {
-	            for (int i = 0; i < todos.size(); i++) {
-	                if (todos.get(i).getNome() != null &&
-	                        todos.get(i).getNome().toLowerCase().contains(valor.toLowerCase())) {
-	                    achados.add(todos.get(i));
-	                }
-	            }
-			} else if (tipoBusca.equals("email")) {
-				for (int i = 0; i < todos.size(); i++) {
-					if (todos.get(i).getEmail() != null && todos.get(i).getEmail().toLowerCase().contains(valor.toLowerCase())) {
-						achados.add(todos.get(i));
-					}
-				}
-			} else if (tipoBusca.equals("tel")) {
-				for (int i = 0; i < todos.size(); i++) {
-					if (todos.get(i).getTelefone() != null && todos.get(i).getTelefone().contains(valor)) {
-						achados.add(todos.get(i));
-					}
-				}
-			} else if (tipoBusca.equals("tipo")) {
-				for (int i = 0; i < todos.size(); i++) {
-					if (todos.get(i).getTipo() != null
-					        && todos.get(i).getTipo().name().equalsIgnoreCase(valor)) {
+                if (pesquisa == null) {
+                    return ResponseEntity.badRequest()
+                        .body("erro: tipo de busca invalido. Use: nome, email, telefone, tipo ou id");
+                }
 
-					    achados.add(todos.get(i));
-					}
-				}
-			} else if (tipoBusca.equals("id")) {
-				try {
-					Long idBusca = Long.parseLong(valor);
-					for (int i = 0; i < todos.size(); i++) {
-						if (todos.get(i).getId().equals(idBusca)) {
-							achados.add(todos.get(i));
-						}
-					}
-				} catch (Exception e) {
-					return ResponseEntity.badRequest().body("erro: id invalido");
-				}
-			} else {
-				return ResponseEntity.badRequest()
-						.body("erro: tipo de busca invalido. Use: nome, email, tel, tipo ou id");
-			}
+            List<Contato> achados = pesquisa.executar(todos, valor.toString());
 
-			if (achados.size() == 0) {
-				return ResponseEntity.ok("nenhum contato encontrado");
-			}
+            if (achados.size() == 0) {
+                return ResponseEntity.ok("nenhum contato encontrado");
+            }
 
 			String s = "=== RESULTADO DA PESQUISA ===\n";
 			s = s + "Encontrados: " + achados.size() + "\n\n";
@@ -208,13 +173,16 @@ public class ContatoController {
 				s = s + "Ativo: " + ct.isAtivo() + "\n";
 			}
 
-			logs.add("pesquisou por " + tipoBusca + " valor=" + valor);
-			return ResponseEntity.ok(s);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(500).body("erro interno: " + e.getMessage());
-		}
-	}
+            logs.add("pesquisou por " + tipoBusca + " valor=" + valor);
+            
+            return ResponseEntity.ok(s);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("erro interno: " + e.getMessage());
+        }
+    }
 
 	@PutMapping("/editar/{id}")
 	public ResponseEntity<String> editar(@PathVariable Long id, @RequestBody Contato c) {

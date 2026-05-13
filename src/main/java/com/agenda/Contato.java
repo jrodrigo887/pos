@@ -29,6 +29,7 @@ public class Contato {
 
     private int idade;
 
+    @Enumerated(EnumType.STRING)
     private TipoContato tipo; // FAMILIA, AMIGO, TRABALHO, OUTRO - string mesmo - ALTERADO SERGIO
 
     // data de cadastro - salva como string mesmo pq e mais facil - ALTERADO SERGIO
@@ -76,8 +77,8 @@ public class Contato {
         return telefone;
     }
 
-    public void setTelefone(String tel) {
-        this.telefone = tel;
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
     }
 
     public String getEmail() {

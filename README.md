@@ -103,3 +103,38 @@ Rodrigo ->
 8. Extrair regras de negócio (ex.: proibição de excluir FAMILIA) para o serviço.
 9. Substituir logs manuais por `Logger` (SLF4J).
 10. Escrever testes unitários e de integração por camada.
+
+---
+
+## Padrão de branches e commits
+
+### Nomenclatura de branches
+
+```
+<tipo>/<numero-da-issue>-descricao-curta
+```
+
+| Tipo | Quando usar |
+|------|-------------|
+| `refactor` | Reestruturação de código |
+| `feature` | Nova funcionalidade |
+| `test` | Criação de testes |
+| `chore` | Configuração, build, arquivos de projeto |
+| `fix` | Correção de bug |
+
+**Exemplos:**
+```bash
+git checkout -b refactor/6-separar-camadas
+git checkout -b test/15-testes-unitarios-integracao
+git checkout -b chore/17-gitignore
+```
+
+### Fechar issue automaticamente no PR
+
+Adicione no corpo do Pull Request:
+
+```
+Closes #<numero-da-issue>
+```
+
+O GitHub fecha a issue automaticamente quando o PR for mergeado na `main`.
