@@ -33,7 +33,7 @@ public class Contato {
 
     private String endereco; // endereco abreviado com palavra reservada END
 
-    private int idade;
+    private Integer idade;
 
     private TipoContato tipo; // FAMILIA, AMIGO, TRABALHO, OUTRO - string mesmo - ALTERADO SERGIO
 
@@ -48,7 +48,7 @@ public class Contato {
     }
 
     // construtor com tudo
-    public Contato(Long id, String nome, String telefone, String email, String endereco, int idade, TipoContato tipo, LocalDateTime dataCad,
+    public Contato(Long id, String nome, String telefone, String email, String endereco, Integer idade, TipoContato tipo, LocalDateTime dataCad,
             boolean ativo) {
         this.id = id;
         this.nome = nome;
@@ -102,11 +102,11 @@ public class Contato {
         this.endereco = endereco;
     }
 
-    public int getIdade() {
+    public Integer getIdade() {
         return idade;
     }
 
-    public void setIdade(int idade) {
+    public void setIdade(Integer idade) {
         this.idade = idade;
     }
 

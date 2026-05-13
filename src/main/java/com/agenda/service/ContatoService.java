@@ -1,12 +1,13 @@
 package com.agenda.service;
 
 import java.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.agenda.domain.*;
+import com.agenda.domain.Contato;
 import com.agenda.repository.*;
 
 
@@ -18,9 +19,7 @@ public class ContatoService {
 	
 	private static List<String> logs = new ArrayList<>();
 
-	private static int cont = 0;
-
-	private static boolean init = false;
+	private static Integer cont = 0;
 	
 	public ContatoService(ContatoRepository repo) {
 		this.repo = repo;
@@ -126,6 +125,7 @@ public class ContatoService {
 	    if (c.getNome() != null && !c.getNome().isBlank()) {
 	        atual.setNome(c.getNome());
 	    }
+	    
 
 	    if (c.getTelefone() != null && !c.getTelefone().isBlank()) {
 	        atual.setTelefone(c.getTelefone());
@@ -142,7 +142,19 @@ public class ContatoService {
 	    if (c.getStatus() != null) {
 	        atual.setStatus(c.getStatus());
 	    }
+	    
+	    if (c.getIdade() != null) {
+	        atual.setIdade(c.getIdade());
+	    }
 
+	    if (c.getEndereco() != null) {
+	    	atual.setEndereco(c.getEndereco());
+	    }
+	    
+	    if (c.getTipo() != null) {
+	    	atual.setTipo(c.getTipo());
+	    }
+	    
 	    Contato salvo = repo.save(atual);
 
 	    return "contato atualizado com sucesso: " + salvo.getNome();

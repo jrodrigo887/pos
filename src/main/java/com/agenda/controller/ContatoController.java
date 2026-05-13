@@ -42,7 +42,6 @@ public class ContatoController {
 	
 	@DeleteMapping("/excluir/{id}")
 	public ResponseEntity<String> excluir(@PathVariable Long id) {
-
 	    return ResponseEntity.ok(service.excluir(id));
 	}
 	
