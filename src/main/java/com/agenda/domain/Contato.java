@@ -1,8 +1,14 @@
-package com.agenda;
+package com.agenda.domain;
 
-import jakarta.persistence.*;
-import com.agenda.domain.*;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "contatos")
@@ -27,9 +33,8 @@ public class Contato {
 
     private String endereco; // endereco abreviado com palavra reservada END
 
-    private int idade;
+    private Integer idade;
 
-    @Enumerated(EnumType.STRING)
     private TipoContato tipo; // FAMILIA, AMIGO, TRABALHO, OUTRO - string mesmo - ALTERADO SERGIO
 
     // data de cadastro - salva como string mesmo pq e mais facil - ALTERADO SERGIO
@@ -43,7 +48,7 @@ public class Contato {
     }
 
     // construtor com tudo
-    public Contato(Long id, String nome, String telefone, String email, String endereco, int idade, TipoContato tipo, LocalDateTime dataCad,
+    public Contato(Long id, String nome, String telefone, String email, String endereco, Integer idade, TipoContato tipo, LocalDateTime dataCad,
             boolean ativo) {
         this.id = id;
         this.nome = nome;
@@ -77,8 +82,8 @@ public class Contato {
         return telefone;
     }
 
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
+    public void setTelefone(String tel) {
+        this.telefone = tel;
     }
 
     public String getEmail() {
@@ -97,11 +102,11 @@ public class Contato {
         this.endereco = endereco;
     }
 
-    public int getIdade() {
+    public Integer getIdade() {
         return idade;
     }
 
-    public void setIdade(int idade) {
+    public void setIdade(Integer idade) {
         this.idade = idade;
     }
 

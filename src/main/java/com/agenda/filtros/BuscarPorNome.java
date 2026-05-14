@@ -3,7 +3,7 @@ package com.agenda.filtros;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.agenda.Contato;
+import com.agenda.domain.Contato;
 
 public class BuscarPorNome implements IPesquisarContatoStrategy {
 

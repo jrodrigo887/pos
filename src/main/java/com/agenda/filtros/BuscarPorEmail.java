@@ -1,9 +1,8 @@
 package com.agenda.filtros;
 
 import java.util.ArrayList;
+import com.agenda.domain.Contato;
 import java.util.List;
-
-import com.agenda.Contato;
 
 public class BuscarPorEmail implements IPesquisarContatoStrategy {
 
