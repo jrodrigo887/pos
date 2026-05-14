@@ -41,16 +41,23 @@ public class ContatoController {
 	}
 	
 	@DeleteMapping("/excluir/{id}")
-	public ResponseEntity<String> excluir(@PathVariable Long id) {
+	public ResponseEntity<String> excluir(
+		@PathVariable Long id) {
+			if (id == null){
+				return ResponseEntity.badRequest().body("erro: id obrigatório");
+			}
 	    return ResponseEntity.ok(service.excluir(id));
 	}
 	
 	@PutMapping("/editar/{id}")
 	public ResponseEntity<String> editar(
 	        @PathVariable Long id,
-	        @RequestBody Contato c) {
+	        @RequestBody Contato contato) {
+				if (id == null){
+					return ResponseEntity.badRequest().body("erro: id obrigatório");
+				}
 
-	    return ResponseEntity.ok(service.editar(id, c));
+	    return ResponseEntity.ok(service.editar(id, contato));
 	}
 	
 		

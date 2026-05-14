@@ -1,6 +1,7 @@
 package com.agenda.service;
 
 import java.time.LocalDateTime;
+import org.springframework.lang.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.agenda.domain.Contato;
-import com.agenda.repository.*;
+import com.agenda.repository.ContatoRepository;
 
 
 
@@ -25,6 +26,7 @@ public class ContatoService {
 		this.repo = repo;
 
 	}
+
 	public String incluir(Contato c) {
 		try {
 			if (c.getNome() == null || c.getNome().isBlank()) {
@@ -35,7 +37,7 @@ public class ContatoService {
 			}
 			if (c.getTelefone() == null || c.getTelefone().isBlank()) {
 				return "erro: telefone obrigatorio";
-	        }
+			}
 			if (c.getEmail() == null || c.getEmail().isBlank()) {
 				return "erro: email obrigatorio";
 			}
@@ -54,11 +56,11 @@ public class ContatoService {
 			if (c.getStatus() == null) {
 				System.out.println("STATUS RECEBIDO: " + c.getStatus());
 				System.out.println("TIPO RECEBIDO: " + c.getTipo());
-			    return "erro: status obrigatorio";
+				return "erro: status obrigatorio";
 			}
 
 			if (c.getTipo() == null) {
-			    return "erro: tipo invalido. Use: FAMILIA, AMIGO, TRABALHO ou OUTRO";
+				return "erro: tipo invalido. Use: FAMILIA, AMIGO, TRABALHO ou OUTRO";
 			}
 
 			List<Contato> todos = repo.findAll();
@@ -86,78 +88,73 @@ public class ContatoService {
 
 			
 		} catch (Exception e) {
-		    e.printStackTrace();
-		    return "erro interno: " + e.getMessage();
+			e.printStackTrace();
+			return "erro interno: " + e.getMessage();
 		}
 	}
 	public List<Contato> listar() {
-	    return repo.findAll();
+		return repo.findAll();
 	}
 	
-	public String pesquisar(Long id) {
-	    Contato contato = repo.findById(id).orElse(null);
+	public String pesquisar(@NonNull Long id) {
+		Contato contato = repo.findById(id).orElse(null);
 
-	    if (contato == null) {
-	        return "erro: contato não encontrado";
-	    }
+			if (contato == null) {
+				return "erro: contato não encontrado";
+			}
 
-	    return contato.toString();
+			return contato.toString();
 	}
 	
-	public String excluir(Long id) {
-	    if (!repo.existsById(id)) {
-	        return "erro: contato não encontrado";
-	    }
+	public String excluir(@NonNull Long id) {
+	if (!repo.existsById(id)) {
+		return "erro: contato não encontrado";
+	}
 
-	    repo.deleteById(id);
+	repo.deleteById(id);
 
-	    return "contato excluído com sucesso";
+	return "contato excluído com sucesso";
 	}
 	
-	public String editar(Long id, Contato c) {
+	public String editar(@NonNull Long id, Contato c) {
 
-	    Contato atual = repo.findById(id).orElse(null);
+	Contato atual = repo.findById(id).orElse(null);
 
-	    if (atual == null) {
-	        return "erro: contato não encontrado";
-	    }
+	if (atual == null) {
+		return "erro: contato não encontrado";
+	}
 
-	    if (c.getNome() != null && !c.getNome().isBlank()) {
-	        atual.setNome(c.getNome());
-	    }
-	    
+	if (c.getNome() != null && !c.getNome().isBlank()) {
+		atual.setNome(c.getNome());
+	}
 
-	    if (c.getTelefone() != null && !c.getTelefone().isBlank()) {
-	        atual.setTelefone(c.getTelefone());
-	    }
+    if (c.getTelefone() != null && !c.getTelefone().isBlank()) {
+        atual.setTelefone(c.getTelefone());
+    }
 
-	    if (c.getEmail() != null && !c.getEmail().isBlank()) {
-	        atual.setEmail(c.getEmail());
-	    }
+    if (c.getEmail() != null && !c.getEmail().isBlank()) {
+        atual.setEmail(c.getEmail());
+    }
 
-	    if (c.getTipo() != null) {
-	        atual.setTipo(c.getTipo());
-	    }
+    if (c.getTipo() != null) {
+        atual.setTipo(c.getTipo());
+    }
 
-	    if (c.getStatus() != null) {
-	        atual.setStatus(c.getStatus());
-	    }
-	    
-	    if (c.getIdade() != null) {
-	        atual.setIdade(c.getIdade());
-	    }
+    if (c.getStatus() != null) {
+        atual.setStatus(c.getStatus());
+    }
+    
+    if (c.getIdade() != null) {
+        atual.setIdade(c.getIdade());
+    }
 
-	    if (c.getEndereco() != null) {
-	    	atual.setEndereco(c.getEndereco());
-	    }
-	    
-	    if (c.getTipo() != null) {
-	    	atual.setTipo(c.getTipo());
-	    }
-	    
-	    Contato salvo = repo.save(atual);
+    if (c.getEndereco() != null) {
+    	atual.setEndereco(c.getEndereco());
+    }
+    
+    Contato salvo = repo.save(atual);
 
-	    return "contato atualizado com sucesso: " + salvo.getNome();
+	return "contato atualizado com sucesso: " + salvo.getNome();
 	}
 	
 	public List<Contato> pesquisar(String tipoBusca, String valor) {
@@ -202,14 +199,14 @@ public class ContatoService {
 	}
 	
 	public String verLogs() {
-	    String s = "=== LOGS ===\n";
-	    s = s + "Total operacoes: " + cont + "\n\n";
+		String s = "=== LOGS ===\n";
+		s = s + "Total operacoes: " + cont + "\n\n";
 
-	    for (int i = 0; i < logs.size(); i++) {
-	        s = s + logs.get(i) + "\n";
-	    }
+	for (int i = 0; i < logs.size(); i++) {
+		s = s + logs.get(i) + "\n";
+	}
 
-	    return s;
+	return s;
 	}
 
 }

@@ -1,0 +1,257 @@
+@baseUrl = http://localhost:8080/contatos
+
+# ============================================================
+# AGENDA DE CONTATOS - REST Client (VSCode)
+# Extensão: REST Client (Huachao Mao)
+# Instale: Ctrl+Shift+X > buscar "REST Client"
+# Executar request: clique em "Send Request" acima de cada ###
+# ============================================================
+
+
+### ============================================================
+### POST - Incluir contato (AMIGO)
+### ============================================================
+POST {{baseUrl}}/incluir
+Content-Type: application/json
+
+{
+  "nome": "Carlos Souza",
+  "telefone": "(11) 91234-5678",
+  "email": "carlos.souza@email.com",
+  "endereco": "Rua das Flores, 123 - São Paulo/SP",
+  "idade": 30,
+  "tipo": "AMIGO",
+  "status": "ATIVO"
+}
+
+### ============================================================
+### POST - Incluir contato (FAMILIA)
+### ============================================================
+POST {{baseUrl}}/incluir
+Content-Type: application/json
+
+{
+  "nome": "Ana Lima",
+  "telefone": "(21) 98765-4321",
+  "email": "ana.lima@email.com",
+  "endereco": "Av. Brasil, 500 - Rio de Janeiro/RJ",
+  "idade": 45,
+  "tipo": "FAMILIA",
+  "status": "ATIVO"
+}
+
+### ============================================================
+### POST - Incluir contato (TRABALHO)
+### ============================================================
+POST {{baseUrl}}/incluir
+Content-Type: application/json
+
+{
+  "nome": "Pedro Alves",
+  "telefone": "(31) 97777-8888",
+  "email": "pedro.alves@empresa.com",
+  "endereco": "Rua do Comércio, 77 - Belo Horizonte/MG",
+  "idade": 38,
+  "tipo": "TRABALHO",
+  "status": "ATIVO"
+}
+
+### ============================================================
+### POST - Incluir contato (OUTRO / status INATIVO)
+### ============================================================
+POST {{baseUrl}}/incluir
+Content-Type: application/json
+
+{
+  "nome": "Julia Ferreira",
+  "telefone": "(41) 96666-2222",
+  "email": "julia.ferreira@mail.com",
+  "endereco": "Rua Xv de Novembro, 10 - Curitiba/PR",
+  "idade": 25,
+  "tipo": "OUTRO",
+  "status": "INATIVO"
+}
+
+### ============================================================
+### POST - ERRO: nome ausente
+### ============================================================
+POST {{baseUrl}}/incluir
+Content-Type: application/json
+
+{
+  "nome": "",
+  "telefone": "(11) 91111-2222",
+  "email": "semteste@email.com",
+  "idade": 20,
+  "tipo": "AMIGO",
+  "status": "ATIVO"
+}
+
+### ============================================================
+### POST - ERRO: email inválido (sem @)
+### ============================================================
+POST {{baseUrl}}/incluir
+Content-Type: application/json
+
+{
+  "nome": "Teste Invalido",
+  "telefone": "(11) 91111-3333",
+  "email": "emailinvalido.com",
+  "idade": 20,
+  "tipo": "AMIGO",
+  "status": "ATIVO"
+}
+
+### ============================================================
+### POST - ERRO: tipo ausente
+### ============================================================
+POST {{baseUrl}}/incluir
+Content-Type: application/json
+
+{
+  "nome": "Sem Tipo",
+  "telefone": "(11) 92222-4444",
+  "email": "semtipo@email.com",
+  "idade": 22,
+  "status": "ATIVO"
+}
+
+### ============================================================
+### POST - ERRO: status ausente
+### ============================================================
+POST {{baseUrl}}/incluir
+Content-Type: application/json
+
+{
+  "nome": "Sem Status",
+  "telefone": "(11) 93333-5555",
+  "email": "semstatus@email.com",
+  "idade": 28,
+  "tipo": "AMIGO"
+}
+
+### ============================================================
+### GET - Listar todos os contatos
+### ============================================================
+GET {{baseUrl}}/listar
+
+### ============================================================
+### GET - Pesquisar por NOME (parcial ou completo)
+### ============================================================
+GET {{baseUrl}}/pesquisar?tipoBusca=nome&valor=Carlos
+
+### ============================================================
+### GET - Pesquisar por EMAIL
+### ============================================================
+GET {{baseUrl}}/pesquisar?tipoBusca=email&valor=ana.lima@email.com
+
+### ============================================================
+### GET - Pesquisar por TELEFONE
+### ============================================================
+GET {{baseUrl}}/pesquisar?tipoBusca=telefone&valor=(31) 97777-8888
+
+### ============================================================
+### GET - Pesquisar por TIPO (FAMILIA | AMIGO | TRABALHO | OUTRO)
+### ============================================================
+GET {{baseUrl}}/pesquisar?tipoBusca=tipo&valor=TRABALHO
+
+### ============================================================
+### GET - Pesquisar por ID
+### ============================================================
+GET {{baseUrl}}/pesquisar?tipoBusca=id&valor=1
+
+### ============================================================
+### GET - ERRO: tipo de busca inválido
+### ============================================================
+GET {{baseUrl}}/pesquisar?tipoBusca=invalido&valor=teste
+
+### ============================================================
+### PUT - Editar contato por ID (atualiza nome, telefone e endereço)
+### Ajuste o {id} conforme o ID retornado no POST
+### ============================================================
+PUT {{baseUrl}}/editar/1
+Content-Type: application/json
+
+{
+  "nome": "Carlos Souza Atualizado",
+  "telefone": "(11) 99999-0000",
+  "endereco": "Rua Nova, 999 - São Paulo/SP",
+  "ativo": true
+}
+
+### ============================================================
+### PUT - Editar apenas o email
+### ============================================================
+PUT {{baseUrl}}/editar/1
+Content-Type: application/json
+
+{
+  "email": "carlos.novo@email.com",
+  "ativo": true
+}
+
+### ============================================================
+### PUT - Editar tipo e idade
+### ============================================================
+PUT {{baseUrl}}/editar/1
+Content-Type: application/json
+
+{
+  "tipo": "TRABALHO",
+  "idade": 35,
+  "ativo": true
+}
+
+### ============================================================
+### PUT - Desativar contato (ativo = false)
+### ============================================================
+PUT {{baseUrl}}/editar/1
+Content-Type: application/json
+
+{
+  "ativo": false
+}
+
+### ============================================================
+### PUT - ERRO: email inválido no editar
+### ============================================================
+PUT {{baseUrl}}/editar/1
+Content-Type: application/json
+
+{
+  "email": "emailsemarroba.com",
+  "ativo": true
+}
+
+### ============================================================
+### PUT - ERRO: contato não encontrado
+### ============================================================
+PUT {{baseUrl}}/editar/9999
+Content-Type: application/json
+
+{
+  "nome": "Ninguem",
+  "ativo": true
+}
+
+### ============================================================
+### DELETE - Excluir contato por ID
+### Obs: contatos do tipo FAMILIA não podem ser excluídos
+### ============================================================
+DELETE {{baseUrl}}/excluir/3
+
+### ============================================================
+### DELETE - ERRO: tentar excluir contato do tipo FAMILIA
+### (use o ID do contato Ana Lima cadastrado acima)
+### ============================================================
+DELETE {{baseUrl}}/excluir/2
+
+### ============================================================
+### DELETE - ERRO: contato não encontrado
+### ============================================================
+DELETE {{baseUrl}}/excluir/9999
+
+### ============================================================
+### GET - Ver logs de operações
+### ============================================================
+GET {{baseUrl}}/logs
