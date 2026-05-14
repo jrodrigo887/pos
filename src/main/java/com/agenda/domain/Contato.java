@@ -1,7 +1,7 @@
-package com.agenda;
+package com.agenda.domain;
 
 import jakarta.persistence.*;
-import com.agenda.domain.*;
+
 import java.time.LocalDateTime;
 
 @Entity
