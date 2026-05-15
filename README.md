@@ -103,3 +103,5 @@ Rodrigo ->
 8. Extrair regras de negócio (ex.: proibição de excluir FAMILIA) para o serviço.
 9. Substituir logs manuais por `Logger` (SLF4J).
 10. Escrever testes unitários e de integração por camada.
+
+- Incluir ou separar a sessão de padronização das branches e commits em um novo arquivo .md.

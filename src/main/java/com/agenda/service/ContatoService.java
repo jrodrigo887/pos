@@ -6,11 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.agenda.domain.Contato;
+import com.agenda.domain.TipoContato;
 import com.agenda.dto.ContatoRequest;
 import com.agenda.dto.ContatoResponse;
+import com.agenda.filtros.Filtro;
 import com.agenda.repository.ContatoRepository;
 
-import org.springframework.lang.NonNull;
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.stereotype.Service;
 
 
@@ -91,20 +94,9 @@ public class ContatoService {
 
         Contato salvo = repo.save(contato);
 
-        ContatoResponse response = new ContatoResponse();
+        cont++;
 
-        response.setId(salvo.getId());
-        response.setNome(salvo.getNome());
-        response.setTelefone(salvo.getTelefone());
-        response.setEmail(salvo.getEmail());
-        response.setEndereco(salvo.getEndereco());
-        response.setIdade(salvo.getIdade());
-        response.setTipo(salvo.getTipo());
-        response.setStatus(salvo.getStatus());
-        response.setAtivo(salvo.isAtivo());
-        response.setDataCad(salvo.getDataCad());
-
-        return response;
+        return toResponse(salvo);
 
     } catch (Exception e) {
         throw new RuntimeException("erro interno: " + e.getMessage());
@@ -113,48 +105,34 @@ public class ContatoService {
 
 	public List<ContatoResponse> listar() {
 
-		List<Contato> contatos = repo.findAll();
+    List<Contato> contatos = repo.findAll();
 
-		List<ContatoResponse> responses = new ArrayList<>();
+    List<ContatoResponse> responses = new ArrayList<>();
 
-		for (Contato contato : contatos){
-
-			ContatoResponse response = new ContatoResponse();
-
-			response.setId(contato.getId());
-			response.setNome(contato.getNome());
-			response.setTelefone(contato.getTelefone());
-			response.setEmail(contato.getEmail());
-			response.setEndereco(contato.getEndereco());
-			response.setIdade(contato.getIdade());
-			response.setTipo(contato.getTipo());
-			response.setStatus(contato.getStatus());
-			response.setAtivo(contato.isAtivo());
-			response.setDataCad(contato.getDataCad());
-
-        responses.add(response);
-		}
-
-		return responses;
-	}
-	
-	public String excluir(@NonNull Long id) {
-	if (!repo.existsById(id)) {
-		return "erro: contato não encontrado";
-	}
-
-	repo.deleteById(id);
-
-	return "contato excluído com sucesso";
-	}
-	
-	public ContatoResponse editar(@NonNull Long id, ContatoRequest request) {
-
-    Contato atual = repo.findById(id).orElse(null);
-
-    if (atual == null) {
-        throw new RuntimeException("erro: contato não encontrado");
+    for (Contato contato : contatos) {
+        responses.add(toResponse(contato));
     }
+
+    return responses;
+}
+	
+	public String excluir(Long id) {
+        Contato contato = repo.findById(id).orElseThrow(() -> new EntityNotFoundException("contato não encontrado"));
+
+        if (contato.getTipo() == TipoContato.FAMILIA){
+            throw new RuntimeException("erro: não é permitido excluir contato do tipo FAMILIA");
+        }
+        
+        repo.delete(contato);
+
+        cont++;
+
+	    return "contato excluído com sucesso";
+	}
+	
+	public ContatoResponse editar(Long id, ContatoRequest request) {
+
+    Contato atual = repo.findById(id).orElseThrow(() -> new EntityNotFoundException("contato não encontrado"));
 
     if (request.getNome() != null && !request.getNome().isBlank()) {
         atual.setNome(request.getNome());
@@ -164,7 +142,17 @@ public class ContatoService {
         atual.setTelefone(request.getTelefone());
     }
 
+
     if (request.getEmail() != null && !request.getEmail().isBlank()) {
+
+        List<Contato> contatos = repo.findByEmail(request.getEmail());
+
+        Boolean emailJaExiste = contatos.stream().anyMatch(c -> !c.getId().equals(atual.getId()));
+
+        if(emailJaExiste){
+            throw new RuntimeException("erro: email já cadastrado");
+        }
+
         atual.setEmail(request.getEmail());
     }
 
@@ -186,76 +174,48 @@ public class ContatoService {
 
     Contato salvo = repo.save(atual);
 
-    ContatoResponse response = new ContatoResponse();
+    cont++;
 
-    response.setId(salvo.getId());
-    response.setNome(salvo.getNome());
-    response.setTelefone(salvo.getTelefone());
-    response.setEmail(salvo.getEmail());
-    response.setEndereco(salvo.getEndereco());
-    response.setIdade(salvo.getIdade());
-    response.setTipo(salvo.getTipo());
-    response.setStatus(salvo.getStatus());
-    response.setAtivo(salvo.isAtivo());
-    response.setDataCad(salvo.getDataCad());
-
-    return response;
+    return toResponse(salvo);
 }
 	
 	public List<ContatoResponse> pesquisar(String tipoBusca, String valor) {
-		List<Contato> todos = repo.findAll();
-		List<ContatoResponse> resultado = new ArrayList<>();
-		
-		for (Contato contato : todos) {
-			boolean encontrou = false;
-			
-			if (tipoBusca.equalsIgnoreCase("nome")) {
-            encontrou = contato.getNome() != null &&
-                    contato.getNome().toLowerCase().contains(valor.toLowerCase());
-        }
 
-        if (tipoBusca.equalsIgnoreCase("telefone")) {
-            encontrou = contato.getTelefone() != null &&
-                    contato.getTelefone().toLowerCase().contains(valor.toLowerCase());
-        }
+    List<Contato> todos = repo.findAll();
 
-        if (tipoBusca.equalsIgnoreCase("email")) {
-            encontrou = contato.getEmail() != null &&
-                    contato.getEmail().toLowerCase().contains(valor.toLowerCase());
-        }
+    List<Contato> contatosEncontrados = Filtro
+            .chaveDoContato(tipoBusca)
+            .executar(todos, valor);
 
-        if (tipoBusca.equalsIgnoreCase("tipo")) {
-            encontrou = contato.getTipo() != null &&
-                    contato.getTipo().name().equalsIgnoreCase(valor);
-        }
+    List<ContatoResponse> resultado = new ArrayList<>();
 
-        if (tipoBusca.equalsIgnoreCase("id")) {
-            Long id = Long.parseLong(valor);
+    for (Contato contato : contatosEncontrados) {
+        ContatoResponse response = toResponse(contato);
 
-            encontrou = contato.getId() != null &&
-                    contato.getId().equals(id);
-        }
-
-        if (encontrou) {
-            ContatoResponse response = new ContatoResponse();
-
-            response.setId(contato.getId());
-            response.setNome(contato.getNome());
-            response.setTelefone(contato.getTelefone());
-            response.setEmail(contato.getEmail());
-            response.setEndereco(contato.getEndereco());
-            response.setIdade(contato.getIdade());
-            response.setTipo(contato.getTipo());
-            response.setStatus(contato.getStatus());
-            response.setAtivo(contato.isAtivo());
-            response.setDataCad(contato.getDataCad());
-
-            resultado.add(response);
-        }
+        resultado.add(response);
     }
 
     return resultado;
 }
+    
+    
+    private ContatoResponse toResponse(Contato contato) {
+
+        ContatoResponse response = new ContatoResponse();
+
+        response.setId(contato.getId());
+        response.setNome(contato.getNome());
+        response.setTelefone(contato.getTelefone());
+        response.setEmail(contato.getEmail());
+        response.setEndereco(contato.getEndereco());
+        response.setIdade(contato.getIdade());
+        response.setTipo(contato.getTipo());
+        response.setStatus(contato.getStatus());
+        response.setAtivo(contato.isAtivo());
+        response.setDataCad(contato.getDataCad());
+
+        return response;
+    }
 
 	
 	public String verLogs() {

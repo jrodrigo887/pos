@@ -4,6 +4,7 @@ import com.agenda.service.*;
 import com.agenda.dto.ContatoRequest;
 import com.agenda.dto.ContatoResponse;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class ContatoController {
 
 	@PostMapping("/incluir")
 	public ResponseEntity<ContatoResponse> incluir(@RequestBody ContatoRequest request) {
-		return ResponseEntity.ok(service.incluir(request));
+		return ResponseEntity.status(HttpStatus.CREATED).body(service.incluir(request));
 	}
 		
 			
