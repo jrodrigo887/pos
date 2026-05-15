@@ -3,6 +3,7 @@ package com.agenda;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.agenda.domain.TipoContato;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import com.agenda.filtros.Filtro;
@@ -185,7 +186,7 @@ public class ContatoController {
     }
 
 	@PutMapping("/editar/{id}")
-	public ResponseEntity<String> editar(@PathVariable Long id, @RequestBody Contato c) {
+	public ResponseEntity<String> editar(@PathVariable @NonNull Long id, @RequestBody Contato c) {
 		try {
 			Optional<Contato> op = repo.findById(id);
 			if (!op.isPresent()) {
@@ -257,7 +258,7 @@ public class ContatoController {
 	}
 
 	@DeleteMapping("/excluir/{id}")
-	public ResponseEntity<String> excluir(@PathVariable Long id) {
+	public ResponseEntity<String> excluir(@PathVariable @NonNull Long id) {
 		try {
 			Optional<Contato> op = repo.findById(id);
 			if (!op.isPresent()) {

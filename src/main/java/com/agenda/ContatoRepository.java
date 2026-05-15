@@ -4,11 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.lang.NonNull;
 
 public interface ContatoRepository extends JpaRepository<Contato, Long> {
     List<Contato> findByNome(String nome);
     List<Contato> findByEmail(String email);
     List<Contato> findByTelefone(String telefone);
-    Optional<Contato> findById(Long id);
+    Optional<Contato> findById(@NonNull Long id);
     List<Contato> findByTipo(String tipo);
 }
