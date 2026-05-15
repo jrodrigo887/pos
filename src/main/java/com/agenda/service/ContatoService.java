@@ -1,15 +1,17 @@
 package com.agenda.service;
 
 import java.time.LocalDateTime;
-import org.springframework.lang.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
 import com.agenda.domain.Contato;
+import com.agenda.dto.ContatoRequest;
+import com.agenda.dto.ContatoResponse;
 import com.agenda.repository.ContatoRepository;
+
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Service;
 
 
 
@@ -21,89 +23,119 @@ public class ContatoService {
 	private static List<String> logs = new ArrayList<>();
 
 	private static Integer cont = 0;
-	
+
+		
 	public ContatoService(ContatoRepository repo) {
 		this.repo = repo;
 
 	}
 
-	public String incluir(Contato c) {
-		try {
-			if (c.getNome() == null || c.getNome().isBlank()) {
-				return "erro: nome obrigatório";
-			}
-			if (c.getNome().length() < 3) {
-				return "erro: nome muito curto";
-			}
-			if (c.getTelefone() == null || c.getTelefone().isBlank()) {
-				return "erro: telefone obrigatorio";
-			}
-			if (c.getEmail() == null || c.getEmail().isBlank()) {
-				return "erro: email obrigatorio";
-			}
-			if (!c.getEmail().contains("@")) {
-				return "erro: email invalido";
-			}
-			if (!c.getEmail().contains(".")) {
-				return "erro: email invalido";
-			}
-			if (c.getIdade() < 0) {
-				return "erro: idade invalida";
-			}
-			if (c.getIdade() > 150) {
-				return "erro: idade invalida";
-			}
-			if (c.getStatus() == null) {
-				System.out.println("STATUS RECEBIDO: " + c.getStatus());
-				System.out.println("TIPO RECEBIDO: " + c.getTipo());
-				return "erro: status obrigatorio";
-			}
+	public ContatoResponse incluir(ContatoRequest request) {
+    try {
+        if (request.getNome() == null || request.getNome().isBlank()) {
+            throw new RuntimeException("erro: nome obrigatório");
+        }
 
-			if (c.getTipo() == null) {
-				return "erro: tipo invalido. Use: FAMILIA, AMIGO, TRABALHO ou OUTRO";
-			}
+        if (request.getNome().length() < 3) {
+            throw new RuntimeException("erro: nome muito curto");
+        }
 
-			List<Contato> todos = repo.findAll();
-			for (int i = 0; i < todos.size(); i++) {
-				if (todos.get(i).getEmail() != null && todos.get(i).getEmail().equals(c.getEmail())) {
-					return "erro: ja existe contato com esse email";
-				}
-			}
-			
-			c.setDataCad(LocalDateTime.now());
+        if (request.getTelefone() == null || request.getTelefone().isBlank()) {
+            throw new RuntimeException("erro: telefone obrigatório");
+        }
 
-			c.setAtivo(true);
+        if (request.getEmail() == null || request.getEmail().isBlank()) {
+            throw new RuntimeException("erro: email obrigatório");
+        }
 
-			Contato salvo = repo.save(c);
+        if (!request.getEmail().contains("@") || !request.getEmail().contains(".")) {
+            throw new RuntimeException("erro: email inválido");
+        }
 
-			String resp = "Contato incluido com sucesso!\n";
-			resp = resp + "ID: " + salvo.getId() + "\n";
-			resp = resp + "Nome: " + salvo.getNome() + "\n";
-			resp = resp + "Tel: " + salvo.getTelefone() + "\n";
-			resp = resp + "Email: " + salvo.getEmail() + "\n";
-			resp = resp + "Tipo: " + salvo.getTipo() + "\n";
-			resp = resp + "Cadastrado em: " + salvo.getDataCad();
-			
-			return resp;
+        if (request.getIdade() == null) {
+            throw new RuntimeException("erro: idade obrigatória");
+        }
 
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "erro interno: " + e.getMessage();
+        if (request.getIdade() < 0 || request.getIdade() > 150) {
+            throw new RuntimeException("erro: idade inválida");
+        }
+
+        if (request.getStatus() == null) {
+            throw new RuntimeException("erro: status obrigatório");
+        }
+
+        if (request.getTipo() == null) {
+            throw new RuntimeException("erro: tipo inválido. Use: FAMILIA, AMIGO, TRABALHO ou OUTRO");
+        }
+
+        List<Contato> todos = repo.findAll();
+
+        for (Contato contatoExistente : todos) {
+            if (contatoExistente.getEmail() != null &&
+                contatoExistente.getEmail().equals(request.getEmail())) {
+                throw new RuntimeException("erro: já existe contato com esse email");
+            }
+        }
+
+        Contato contato = new Contato();
+
+        contato.setNome(request.getNome());
+        contato.setTelefone(request.getTelefone());
+        contato.setEmail(request.getEmail());
+        contato.setEndereco(request.getEndereco());
+        contato.setIdade(request.getIdade());
+        contato.setTipo(request.getTipo());
+        contato.setStatus(request.getStatus());
+        contato.setDataCad(LocalDateTime.now());
+        contato.setAtivo(true);
+
+        Contato salvo = repo.save(contato);
+
+        ContatoResponse response = new ContatoResponse();
+
+        response.setId(salvo.getId());
+        response.setNome(salvo.getNome());
+        response.setTelefone(salvo.getTelefone());
+        response.setEmail(salvo.getEmail());
+        response.setEndereco(salvo.getEndereco());
+        response.setIdade(salvo.getIdade());
+        response.setTipo(salvo.getTipo());
+        response.setStatus(salvo.getStatus());
+        response.setAtivo(salvo.isAtivo());
+        response.setDataCad(salvo.getDataCad());
+
+        return response;
+
+    } catch (Exception e) {
+        throw new RuntimeException("erro interno: " + e.getMessage());
+    }
+}
+
+	public List<ContatoResponse> listar() {
+
+		List<Contato> contatos = repo.findAll();
+
+		List<ContatoResponse> responses = new ArrayList<>();
+
+		for (Contato contato : contatos){
+
+			ContatoResponse response = new ContatoResponse();
+
+			response.setId(contato.getId());
+			response.setNome(contato.getNome());
+			response.setTelefone(contato.getTelefone());
+			response.setEmail(contato.getEmail());
+			response.setEndereco(contato.getEndereco());
+			response.setIdade(contato.getIdade());
+			response.setTipo(contato.getTipo());
+			response.setStatus(contato.getStatus());
+			response.setAtivo(contato.isAtivo());
+			response.setDataCad(contato.getDataCad());
+
+        responses.add(response);
 		}
-	}
-	public List<Contato> listar() {
-		return repo.findAll();
-	}
-	
-	public String pesquisar(@NonNull Long id) {
-		Contato contato = repo.findById(id).orElse(null);
 
-			if (contato == null) {
-				return "erro: contato não encontrado";
-			}
-
-			return contato.toString();
+		return responses;
 	}
 	
 	public String excluir(@NonNull Long id) {
@@ -116,87 +148,115 @@ public class ContatoService {
 	return "contato excluído com sucesso";
 	}
 	
-	public String editar(@NonNull Long id, Contato c) {
+	public ContatoResponse editar(@NonNull Long id, ContatoRequest request) {
 
-	Contato atual = repo.findById(id).orElse(null);
+    Contato atual = repo.findById(id).orElse(null);
 
-	if (atual == null) {
-		return "erro: contato não encontrado";
-	}
-
-	if (c.getNome() != null && !c.getNome().isBlank()) {
-		atual.setNome(c.getNome());
-	}
-
-    if (c.getTelefone() != null && !c.getTelefone().isBlank()) {
-        atual.setTelefone(c.getTelefone());
+    if (atual == null) {
+        throw new RuntimeException("erro: contato não encontrado");
     }
 
-    if (c.getEmail() != null && !c.getEmail().isBlank()) {
-        atual.setEmail(c.getEmail());
+    if (request.getNome() != null && !request.getNome().isBlank()) {
+        atual.setNome(request.getNome());
     }
 
-    if (c.getTipo() != null) {
-        atual.setTipo(c.getTipo());
+    if (request.getTelefone() != null && !request.getTelefone().isBlank()) {
+        atual.setTelefone(request.getTelefone());
     }
 
-    if (c.getStatus() != null) {
-        atual.setStatus(c.getStatus());
-    }
-    
-    if (c.getIdade() != null) {
-        atual.setIdade(c.getIdade());
+    if (request.getEmail() != null && !request.getEmail().isBlank()) {
+        atual.setEmail(request.getEmail());
     }
 
-    if (c.getEndereco() != null) {
-    	atual.setEndereco(c.getEndereco());
+    if (request.getTipo() != null) {
+        atual.setTipo(request.getTipo());
     }
-    
+
+    if (request.getStatus() != null) {
+        atual.setStatus(request.getStatus());
+    }
+
+    if (request.getIdade() != null) {
+        atual.setIdade(request.getIdade());
+    }
+
+    if (request.getEndereco() != null && !request.getEndereco().isBlank()) {
+        atual.setEndereco(request.getEndereco());
+    }
+
     Contato salvo = repo.save(atual);
 
-	return "contato atualizado com sucesso: " + salvo.getNome();
-	}
+    ContatoResponse response = new ContatoResponse();
+
+    response.setId(salvo.getId());
+    response.setNome(salvo.getNome());
+    response.setTelefone(salvo.getTelefone());
+    response.setEmail(salvo.getEmail());
+    response.setEndereco(salvo.getEndereco());
+    response.setIdade(salvo.getIdade());
+    response.setTipo(salvo.getTipo());
+    response.setStatus(salvo.getStatus());
+    response.setAtivo(salvo.isAtivo());
+    response.setDataCad(salvo.getDataCad());
+
+    return response;
+}
 	
-	public List<Contato> pesquisar(String tipoBusca, String valor) {
+	public List<ContatoResponse> pesquisar(String tipoBusca, String valor) {
 		List<Contato> todos = repo.findAll();
-		List<Contato> resultado = new ArrayList<>();
+		List<ContatoResponse> resultado = new ArrayList<>();
 		
-		for (Contato c : todos) {
+		for (Contato contato : todos) {
+			boolean encontrou = false;
+			
 			if (tipoBusca.equalsIgnoreCase("nome")) {
-				if (c.getNome() != null &&
-						c.getNome().toLowerCase().contains(valor.toLowerCase())) {
-					resultado.add(c);
-				}
-			}
-			if (tipoBusca.equalsIgnoreCase("telefone")) {
-				if (c.getTelefone() != null &&
-						c.getTelefone().toLowerCase().contains(valor.toLowerCase())) {
-					resultado.add(c);
-				}
-			}
-			if (tipoBusca.equalsIgnoreCase("email")) {
-				if (c.getEmail() != null &&
-						c.getEmail().toLowerCase().contains(valor.toLowerCase())) {
-					resultado.add(c);
-				}
-			}
-			if (tipoBusca.equalsIgnoreCase("tipo")) {
-				if (c.getTipo() != null &&
-						c.getTipo().name().equalsIgnoreCase(valor)) {
-					resultado.add(c);
-				}
-			}
-			if (tipoBusca.equalsIgnoreCase("id")) {
-				Long id = Long.parseLong(valor);
-				
-				if (c.getId() !=null &&
-						c.getId().equals(id)) {
-					resultado.add(c);
-				}
-			}
-		}
-		return resultado;
-	}
+            encontrou = contato.getNome() != null &&
+                    contato.getNome().toLowerCase().contains(valor.toLowerCase());
+        }
+
+        if (tipoBusca.equalsIgnoreCase("telefone")) {
+            encontrou = contato.getTelefone() != null &&
+                    contato.getTelefone().toLowerCase().contains(valor.toLowerCase());
+        }
+
+        if (tipoBusca.equalsIgnoreCase("email")) {
+            encontrou = contato.getEmail() != null &&
+                    contato.getEmail().toLowerCase().contains(valor.toLowerCase());
+        }
+
+        if (tipoBusca.equalsIgnoreCase("tipo")) {
+            encontrou = contato.getTipo() != null &&
+                    contato.getTipo().name().equalsIgnoreCase(valor);
+        }
+
+        if (tipoBusca.equalsIgnoreCase("id")) {
+            Long id = Long.parseLong(valor);
+
+            encontrou = contato.getId() != null &&
+                    contato.getId().equals(id);
+        }
+
+        if (encontrou) {
+            ContatoResponse response = new ContatoResponse();
+
+            response.setId(contato.getId());
+            response.setNome(contato.getNome());
+            response.setTelefone(contato.getTelefone());
+            response.setEmail(contato.getEmail());
+            response.setEndereco(contato.getEndereco());
+            response.setIdade(contato.getIdade());
+            response.setTipo(contato.getTipo());
+            response.setStatus(contato.getStatus());
+            response.setAtivo(contato.isAtivo());
+            response.setDataCad(contato.getDataCad());
+
+            resultado.add(response);
+        }
+    }
+
+    return resultado;
+}
+
 	
 	public String verLogs() {
 		String s = "=== LOGS ===\n";

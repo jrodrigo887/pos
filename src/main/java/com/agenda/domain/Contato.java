@@ -156,24 +156,11 @@ public class Contato {
         return true;
     }
 
-    // formata o contato pra exibir - mistura model com view
-    public String formatar() {
-        String s = "";
-        s = s + "ID: " + this.id + " | ";
-        s = s + "Nome: " + this.nome + " | ";
-        s = s + "Tel: " + this.telefone + " | ";
-        s = s + "Email: " + this.email + " | ";
-        s = s + "End: " + this.endereco + " | ";
-        s = s + "Idade: " + this.idade + " | ";
-        s = s + "Tipo: " + this.tipo + " | ";
-        s = s + "Ativo: " + this.ativo;
-        return s;
-    }
-
 	public Status getStatus() {
 		return status;
 	}
 	public void setStatus(Status status) {
 		this.status = status;
 	}
+
 }

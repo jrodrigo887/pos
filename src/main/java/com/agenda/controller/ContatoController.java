@@ -1,7 +1,8 @@
 package com.agenda.controller;
 
 import com.agenda.service.*;
-import com.agenda.domain.*;
+import com.agenda.dto.ContatoRequest;
+import com.agenda.dto.ContatoResponse;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,20 +21,19 @@ public class ContatoController {
 	}
 
 	@PostMapping("/incluir")
-	public ResponseEntity<String> incluir(@RequestBody Contato c) {
-		String resposta = service.incluir(c);
-		return ResponseEntity.ok(resposta);
+	public ResponseEntity<ContatoResponse> incluir(@RequestBody ContatoRequest request) {
+		return ResponseEntity.ok(service.incluir(request));
 	}
 		
 			
 
 	@GetMapping("/listar")
-	public ResponseEntity<List<Contato>> listar() {
+	public ResponseEntity<List<ContatoResponse>> listar() {
 	    return ResponseEntity.ok(service.listar());
 	}
 	
 	@GetMapping("/pesquisar")
-	public ResponseEntity<List<Contato>> pesquisar(
+	public ResponseEntity<List<ContatoResponse>> pesquisar(
 	        @RequestParam String tipoBusca,
 	        @RequestParam String valor) {
 
@@ -50,14 +50,15 @@ public class ContatoController {
 	}
 	
 	@PutMapping("/editar/{id}")
-	public ResponseEntity<String> editar(
+	public ResponseEntity<ContatoResponse> editar(
 	        @PathVariable Long id,
-	        @RequestBody Contato contato) {
+	        @RequestBody ContatoRequest request) {
+
 				if (id == null){
-					return ResponseEntity.badRequest().body("erro: id obrigatório");
+					return ResponseEntity.badRequest().build();
 				}
 
-	    return ResponseEntity.ok(service.editar(id, contato));
+	    return ResponseEntity.ok(service.editar(id, request));
 	}
 	
 		

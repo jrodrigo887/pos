@@ -13,7 +13,7 @@ public interface ContatoRepository extends JpaRepository<Contato, Long> {
 
     List<Contato> findByEmail(String email);
 
-    List<Contato> findByTelefone(String telefone);  
+    List<Contato> findByTelefone(String telefone);
 
     List<Contato> findByTipo(TipoContato tipo);
 }
