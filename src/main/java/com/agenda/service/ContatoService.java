@@ -14,6 +14,7 @@ import com.agenda.repository.ContatoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 
@@ -116,7 +117,7 @@ public class ContatoService {
     return responses;
 }
 	
-	public String excluir(Long id) {
+	public String excluir(@NonNull Long id) {
         Contato contato = repo.findById(id).orElseThrow(() -> new EntityNotFoundException("contato não encontrado"));
 
         if (contato.getTipo() == TipoContato.FAMILIA){
@@ -130,7 +131,7 @@ public class ContatoService {
 	    return "contato excluído com sucesso";
 	}
 	
-	public ContatoResponse editar(Long id, ContatoRequest request) {
+	public ContatoResponse editar(@NonNull Long id, ContatoRequest request) {
 
     Contato atual = repo.findById(id).orElseThrow(() -> new EntityNotFoundException("contato não encontrado"));
 
