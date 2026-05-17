@@ -44,10 +44,14 @@ public class ContatoController {
 	@DeleteMapping("/excluir/{id}")
 	public ResponseEntity<String> excluir(
 		@PathVariable Long id) {
+
 			if (id == null){
-				return ResponseEntity.badRequest().body("erro: id obrigatório");
+				return ResponseEntity.badRequest().build();
 			}
-	    return ResponseEntity.ok(service.excluir(id));
+
+			service.excluir(id);
+
+	    	return ResponseEntity.noContent().build();
 	}
 	
 	@PutMapping("/editar/{id}")
