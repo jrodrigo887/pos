@@ -3,9 +3,7 @@ package com.agenda.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.agenda.domain.Contato;
-import com.agenda.domain.TipoContato;
+import org.springframework.lang.NonNull;
 
 public interface ContatoRepository extends JpaRepository<Contato, Long> {
 
@@ -14,6 +12,6 @@ public interface ContatoRepository extends JpaRepository<Contato, Long> {
     List<Contato> findByEmail(String email);
 
     List<Contato> findByTelefone(String telefone);
-
-    List<Contato> findByTipo(TipoContato tipo);
+    Optional<Contato> findById(@NonNull Long id);
+    List<Contato> findByTipo(String tipo);
 }
