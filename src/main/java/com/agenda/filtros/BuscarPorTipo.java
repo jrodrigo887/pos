@@ -1,23 +1,16 @@
 package com.agenda.filtros;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import com.agenda.domain.Contato;
 import com.agenda.domain.TipoContato;
+import com.agenda.repository.ContatoRepository;
 
 public class BuscarPorTipo implements IPesquisarContatoStrategy {
 
     @Override
-    public List<Contato> executar(List<Contato> contatos, String value) {
-        List<Contato> achados = new ArrayList<>();
+    public List<Contato> executar(ContatoRepository repository, String value) {
+        var tipo = TipoContato.valueOf(value);
 
-        for (Contato contato : contatos) {
-            if (contato != null
-                && contato.getTipo().equals(TipoContato.valueOf(value)))
-                achados.add(contato);
-        }
-        return achados;
+        return repository.findByTipo(tipo);
     }
-
 }
