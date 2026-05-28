@@ -30,6 +30,14 @@ this.nome = nome;
  public void setEmail(String email){
     this.email = email;
  } 
+ //Getter Telefone
+ public String getTelefone() {
+   return telefone;
+ }
+   //Setter Telefone
+   public void setTelefone(String telefone) {
+   this.telefone = telefone;
+ }
 }
 
 
