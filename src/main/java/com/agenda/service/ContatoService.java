@@ -57,7 +57,7 @@ public class ContatoService {
 	public List<ContatoResponse> pesquisar(String tipoBusca, String valor) {
 		IPesquisarContatoStrategy pesquisa = Filtro.chaveDoContato(tipoBusca);
 		logs.add("pesquisou por " + tipoBusca + " valor=" + valor);
-		return pesquisa.executar(repo, valor).stream()
+		return pesquisa.executar(valor).stream()
 				.map(ContatoResponse::from)
 				.toList();
 	}
