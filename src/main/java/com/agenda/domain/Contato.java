@@ -35,6 +35,7 @@ public class Contato {
 
     private Integer idade;
 
+    @Enumerated(EnumType.STRING)
     private TipoContato tipo; // FAMILIA, AMIGO, TRABALHO, OUTRO - string mesmo - ALTERADO SERGIO
 
     // data de cadastro - salva como string mesmo pq e mais facil - ALTERADO SERGIO
@@ -48,7 +49,8 @@ public class Contato {
     }
 
     // construtor com tudo
-    public Contato(Long id, String nome, String telefone, String email, String endereco, Integer idade, TipoContato tipo, LocalDateTime dataCad,
+    public Contato(Long id, String nome, String telefone, String email, String endereco, Integer idade,
+            TipoContato tipo, LocalDateTime dataCad,
             boolean ativo) {
         this.id = id;
         this.nome = nome;
@@ -134,46 +136,11 @@ public class Contato {
         this.ativo = ativo;
     }
 
-    // metodo que valida o contato - poderia estar em outro lugar mas ta aqui mesmo
-    public boolean valida() {
-        if (this.nome == null || this.nome.isBlank())
-            return false;
-        if (this.nome.length() < 3)
-            return false;
-        if (this.telefone == null || this.telefone.isBlank())
-            return false;
-        if (this.email == null || this.email.isBlank())
-            return false;
-        if (!this.email.contains("@"))
-            return false;
-        if (!this.email.contains("."))
-        	return false;
-        if (this.idade < 0 || this.idade > 150)
-            return false;
-        if (this.status == null)
-        	return false;
-        
-        return true;
+    public Status getStatus() {
+        return status;
     }
 
-    // formata o contato pra exibir - mistura model com view
-    public String formatar() {
-        String s = "";
-        s = s + "ID: " + this.id + " | ";
-        s = s + "Nome: " + this.nome + " | ";
-        s = s + "Tel: " + this.telefone + " | ";
-        s = s + "Email: " + this.email + " | ";
-        s = s + "End: " + this.endereco + " | ";
-        s = s + "Idade: " + this.idade + " | ";
-        s = s + "Tipo: " + this.tipo + " | ";
-        s = s + "Ativo: " + this.ativo;
-        return s;
+    public void setStatus(Status status) {
+        this.status = status;
     }
-
-	public Status getStatus() {
-		return status;
-	}
-	public void setStatus(Status status) {
-		this.status = status;
-	}
 }
