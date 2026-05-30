@@ -17,6 +17,7 @@ import com.agenda.domain.Contato;
 import com.agenda.domain.TipoContato;
 import com.agenda.dtos.CriarContatoRequest;
 import com.agenda.exceptions.RegraDeNegocioException;
+import com.agenda.filtros.Filtro;
 import com.agenda.repository.ContatoRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,6 +25,9 @@ public class ContatoServiceTest {
 
     @Mock
     ContatoRepository repo;
+
+    @Mock
+    Filtro filtro;
 
     @InjectMocks
     ContatoService service;

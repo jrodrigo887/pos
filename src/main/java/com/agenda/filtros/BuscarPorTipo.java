@@ -9,7 +9,7 @@ import com.agenda.domain.Contato;
 import com.agenda.domain.TipoContato;
 import com.agenda.repository.ContatoRepository;
 
-@Component("Tipo")
+@Component("tipo")
 public class BuscarPorTipo implements IPesquisarContatoStrategy {
     @Autowired
     ContatoRepository repos;

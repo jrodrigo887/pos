@@ -22,11 +22,13 @@ import com.agenda.repository.ContatoRepository;
 public class ContatoService {
 
 	private final ContatoRepository repo;
+	private final Filtro filtro;
 
 	private static final List<String> logs = new ArrayList<>();
 
-	public ContatoService(ContatoRepository repo) {
+	public ContatoService(ContatoRepository repo, Filtro filtro) {
 		this.repo = repo;
+		this.filtro = filtro;
 	}
 
 	public ContatoResponse incluir(CriarContatoRequest request) {
@@ -55,7 +57,7 @@ public class ContatoService {
 	}
 
 	public List<ContatoResponse> pesquisar(String tipoBusca, String valor) {
-		IPesquisarContatoStrategy pesquisa = Filtro.chaveDoContato(tipoBusca);
+		IPesquisarContatoStrategy pesquisa = filtro.chaveDoContato(tipoBusca);
 		logs.add("pesquisou por " + tipoBusca + " valor=" + valor);
 		return pesquisa.executar(valor).stream()
 				.map(ContatoResponse::from)
