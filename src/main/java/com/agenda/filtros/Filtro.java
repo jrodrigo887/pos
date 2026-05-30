@@ -6,20 +6,20 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Filtro {
-    public static IPesquisarContatoStrategy chaveDoContato(String value) {
-        // pela chave busque a classe compartível
-        IPesquisarContatoStrategy estrategia = Map.of(
-                "nome", new BuscarPorNome(),
-                "email", new BuscarPorEmail(),
-                "telefone", new BuscarPorTelefone(),
-                "tipo", new BuscarPorTipo(),
-                "id", new BuscarPorId()).get(value);
+
+    private final Map<String, IPesquisarContatoStrategy> estrategias;
+
+    public Filtro(Map<String, IPesquisarContatoStrategy> estrategias) {
+        this.estrategias = estrategias;
+    }
+
+    public IPesquisarContatoStrategy chaveDoContato(String value) {
+        IPesquisarContatoStrategy estrategia = estrategias.get(value);
 
         if (estrategia == null) {
             throw new IllegalArgumentException("Erro: tipo de busca inválido. Use: nome, email, telefone, tipo ou id.");
         }
 
         return estrategia;
-
     }
 }

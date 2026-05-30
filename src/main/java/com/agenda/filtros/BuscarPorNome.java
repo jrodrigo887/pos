@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import com.agenda.domain.Contato;
 import com.agenda.repository.ContatoRepository;
 
-@Component("Nome")
+@Component("nome")
 public class BuscarPorNome implements IPesquisarContatoStrategy {
     @Autowired
     ContatoRepository repos;

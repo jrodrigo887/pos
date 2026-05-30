@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import com.agenda.domain.Contato;
 import com.agenda.repository.ContatoRepository;
 
-@Component("Id")
+@Component("id")
 public class BuscarPorId implements IPesquisarContatoStrategy {
 
     @Autowired
