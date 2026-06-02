@@ -13,12 +13,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.agenda.domain.Contato;
-import com.agenda.domain.TipoContato;
-import com.agenda.dtos.CriarContatoRequest;
-import com.agenda.exceptions.RegraDeNegocioException;
-import com.agenda.filtros.Filtro;
-import com.agenda.repository.ContatoRepository;
+import com.agenda.adapters.dtos.ContatoRequest;
+import com.agenda.adapters.filtros.Filtro;
+import com.agenda.adapters.repository.ContatoRepository;
+import com.agenda.core.domain.Contato;
+import com.agenda.core.domain.TipoContato;
+import com.agenda.core.exceptions.RegraDeNegocioException;
 
 @ExtendWith(MockitoExtension.class)
 public class ContatoServiceTest {
@@ -36,8 +36,8 @@ public class ContatoServiceTest {
     void deveLancarExcecaoComEmailJaCadastrado() {
         when(repo.findByEmail("joao@email.com")).thenReturn(List.of(new Contato()));
 
-        var requestMock = new CriarContatoRequest("Joao", "99-99999-999", "joao@email.com", "", 20, TipoContato.AMIGO,
-                com.agenda.domain.Status.ATIVO);
+        var requestMock = new ContatoRequest("Joao", "99-99999-999", "joao@email.com", "", 20, TipoContato.AMIGO,
+                com.agenda.core.domain.Status.ATIVO);
 
         Throwable excception = assertThrows(RegraDeNegocioException.class, () -> service.incluir(requestMock));
 

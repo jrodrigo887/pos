@@ -7,16 +7,16 @@ import java.util.List;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
-import com.agenda.domain.Contato;
-import com.agenda.domain.TipoContato;
-import com.agenda.dtos.ContatoResponse;
-import com.agenda.dtos.CriarContatoRequest;
-import com.agenda.dtos.AtualizarContatoRequest;
-import com.agenda.exceptions.ContatoNaoEncontradoException;
-import com.agenda.exceptions.RegraDeNegocioException;
-import com.agenda.filtros.Filtro;
-import com.agenda.filtros.IPesquisarContatoStrategy;
-import com.agenda.repository.ContatoRepository;
+import com.agenda.adapters.dtos.AtualizarContatoRequest;
+import com.agenda.adapters.dtos.ContatoRequest;
+import com.agenda.adapters.dtos.ContatoResponse;
+import com.agenda.adapters.filtros.Filtro;
+import com.agenda.adapters.repository.ContatoRepository;
+import com.agenda.core.domain.Contato;
+import com.agenda.core.domain.TipoContato;
+import com.agenda.core.exceptions.ContatoNaoEncontradoException;
+import com.agenda.core.exceptions.RegraDeNegocioException;
+import com.agenda.core.ports.IPesquisarContatoStrategy;
 
 @Service
 public class ContatoService {
@@ -31,7 +31,7 @@ public class ContatoService {
 		this.filtro = filtro;
 	}
 
-	public ContatoResponse incluir(CriarContatoRequest request) {
+	public ContatoResponse incluir(ContatoRequest request) {
 		if (ehEmailCadastrado(request.email())) {
 			throw new RegraDeNegocioException("Já existe um contato com esse e-mail.");
 		}
