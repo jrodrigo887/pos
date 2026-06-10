@@ -2,6 +2,9 @@ package com.agenda.core.domain;
 
 import java.time.LocalDateTime;
 
+import com.agenda.core.enums.Status;
+import com.agenda.core.enums.TipoContato;
+
 public class Contato {
     private Long id; // publico pq e mais facil
 
